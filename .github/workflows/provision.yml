@@ -30,7 +30,7 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        run: terraform plan -input=false -out=tfplan .
+        run: terraform plan -input=false -out=tfplan
 
       - name: Uploading the plan output
         uses: actions/upload-artifact@v2
@@ -74,6 +74,7 @@ jobs:
 
   Delay:
     name: "Waiting for EC2 instances initialization"
+    needs: Apply
     runs-on: ubuntu-latest
     steps:
       - name: Sleep for 3 minutes
@@ -83,7 +84,7 @@ jobs:
 
   Deployment:
     name: "Deployment the Apache Server"
-    needs: Apply
+    needs: Delay
     runs-on: ubuntu-latest
     defaults:
       run:

@@ -1,0 +1,109 @@
+name: "Provision"
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  Plan:
+    name: "Terraform init and plan"
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+        working-directory: './TASK1'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Plan
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: terraform plan -input=false -out=tfplan .
+
+      - name: Uploading the plan output
+        uses: actions/upload-artifact@v2
+        with:
+          name: tfplan
+          path: ${{ github.workspace }}
+
+  Apply:
+    name: "Terraform Apply"
+    needs: Plan
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: './TASK1'
+    steps:
+      - name: Downloading the plan output file.
+        uses: actions/download-artifact@v2
+        with:
+          name: tfplan
+
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          terraform apply -auto-approve tfplan
+
+      - name: Uploading artifacts.
+        uses: actions/upload-artifact@v2
+        with:
+          name: tf-output
+          path: ${{ github.workspace }}
+
+      - name: Uploading the Ansible inventory file
+        uses: actions/upload-artifact@v2
+        with:
+          name: inventory.yaml
+          path: ${{ github.workspace }}
+
+  Delay:
+    name: "Waiting for EC2 instances initialization"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sleep for 3 minutes
+        uses: jakejarvis/wait-action@master
+        with:
+          time: "3m"
+
+  Deployment:
+    name: "Deployment the Apache Server"
+    needs: Apply
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: './TASK1'
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up Python 3.
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install test dependencies.
+        run: pip3 install ansible
+
+      - name: Downloading the inventory file.
+        uses: actions/download-artifact@v2
+        with:
+          name: inventory.yaml
+
+      - name: run ansible playbook
+        run: |
+          ansible-playbook -i inventory.yaml ./ansible/playbook.yml

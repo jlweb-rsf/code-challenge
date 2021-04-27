@@ -1,0 +1,34 @@
+name: 'TASK1-Destroy'
+
+on:
+  workflow_dispatch:
+    branches:
+    - main
+  pull_request:
+
+jobs:
+  destroy:
+    name: 'Destroy the created resources for TASK1'
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./TASK1
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+
+    - name: Terraform Init
+      run: terraform init
+
+    - name: Terraform Destroy
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      run: terraform destroy -auto-approve -input=false
+

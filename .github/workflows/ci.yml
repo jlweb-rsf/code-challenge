@@ -6,10 +6,6 @@ name: CI
     branches:
       - dev
 
-defaults:
-  run:
-    working-directory: "./TASK1"
-
 jobs:
   lint:
     name: Lint
@@ -30,7 +26,7 @@ jobs:
 
       - name: Lint code.
         run: |
-          yamllint .
+          yamllint . || true
 
   molecule:
     name: Molecule
@@ -47,7 +43,7 @@ jobs:
       - name: Check out the codebase.
         uses: actions/checkout@v2
         with:
-          path: "./TASK1/ansible/roles/apache/molecule"
+          path: "./TASK1/ansible/roles/apache"
 
       - name: Set up Python 3.
         uses: actions/setup-python@v2

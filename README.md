@@ -1,6 +1,7 @@
 ##### Overview
 
- - The files in the [TASK1](./TASK1) directory are all playbooks, codes and scripts to bootstrap an Apache server and load balancer on AWS. 🚀
+ - The files in the [TASK](./TASK1) directory are all playbooks, codes and scripts to bootstrap an Apache server and load balancer on AWS. 🚀
+ - I wrote a short description on each terraform file to declare what is the purpose of each of them.
 
 
 ##### CI/CD clarifications:
@@ -9,9 +10,14 @@
 
 - You can easily clone the repository and use it in your desired configurations. You just need to define AWS access keys on repository secrets.
 
-- The CD jobs run by pushing the code into the main branch in order to provision infrastructures described on terraform configuration files and then a delayed job is triggered to wait for few minutes till EC2 instances being ready.
-Finally, the ansible-playbook will be run to deploy a simple Apache web server on the target instance.
+- The deployment [workflow](./.github/workflows/provision.yml) run by pushing the code into or merging with branch `main` and perform the following actions:
+    * provision infrastructures described on terraform configuration files.
+    * a delayed job is triggered to wait for few minutes till EC2 instances being ready.
+    * Finally, the ansible-playbook will be run to deploy a simple Apache web server on the target instance.
 
-- The CI job contains linting for Ansible roles and also testing the whole playbook on different Linux distributions with molecule.
+- The CI [workflow](./.github/workflows/check.yml) (which is run on branch `dev`) contains a linting process to check the typo and code style on Ansible roles and also testing the whole playbook on different Linux distributions with molecule.
 
-- I have set a manual job in order to destroy the created resources.
+- I have set a [workflow](./.github/workflows/destroy.yml) in order to destroy the created resources which would be run mannually.
+
+##### Checking The Apache Service periodically
+- There is a [workflow](./.github/workflows/check.yml) to check the Apache service is up and running, every 15 minutes. It uses a simple ansible ad-hoc command to SSH to the server and ensure httpd service is running as expected.

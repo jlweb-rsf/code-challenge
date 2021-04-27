@@ -107,4 +107,4 @@ jobs:
 
       - name: run ansible playbook
         run: |
-          ansible-playbook -i inventory.yaml ./ansible/playbook.yml
+          ansible-playbook -i inventory.yaml --tags=apache ./ansible/playbook.yml

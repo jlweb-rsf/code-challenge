@@ -1,0 +1,37 @@
+name: "check apache status"
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: "*/15 * * * *"
+
+jobs:
+  check:
+    name: "Check the Status of the Apache Server"
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: "./TASK1"
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up Python 3.
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.x"
+
+      - name: Install test dependencies.
+        run: pip3 install ansible
+
+      - name: Downloading the inventory file.
+        uses: actions/download-artifact@v2
+        with:
+          name: inventory.yaml
+
+      # Ensure that Apache service is running
+      - name: run ansible playbook
+        run: |
+          ansible apache_servers -i inventory.yaml --become --become-user root -m service -a "name=httpd state=started"

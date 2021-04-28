@@ -14,6 +14,14 @@ resource "aws_security_group" "assignment_public_sg" {
   }
 
   ingress {
+    description = "Apache"
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    cidr_blocks = [var.vpc_cidr]
+  }
+
+  ingress {
     description = "SSH"
     from_port   = 22
     to_port     = 22
@@ -27,6 +35,7 @@ resource "aws_security_group" "assignment_public_sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
 
   depends_on = [module.vpc]
 
@@ -35,48 +44,6 @@ resource "aws_security_group" "assignment_public_sg" {
   }
 }
 
-resource "aws_security_group" "assignment_private_sg" {
-  name        = "assignment_private"
-  description = "granting accesses to private subnet just from the public subnet"
-  vpc_id      = module.vpc.vpc_id
-
-  ingress {
-    description = "ping"
-    from_port   = -1
-    to_port     = -1
-    protocol    = "icmp"
-    cidr_blocks = [var.vpc_cidr]
-  }
-
-  ingress {
-    description = "SSH"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = [var.vpc_cidr]
-  }
-
-  ingress {
-    description = "Apache"
-    from_port   = 8080
-    to_port     = 8080
-    protocol    = "tcp"
-    cidr_blocks = [var.vpc_cidr]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  depends_on = [module.vpc]
-
-  tags = {
-    Name = "assignment_private_sg"
-  }
-}
 
 # Create the Load Balancer security group to have access to Apache app.
 resource "aws_security_group" "assignment_alb_sg" {

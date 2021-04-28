@@ -1,0 +1,36 @@
+{
+    "settings": {
+        "notifications": {
+            "slack": [
+                {
+                    "bearerToken": "bearerToken",
+                    "channelId": "channelId"
+                }
+            ]
+        },
+        "monitor": {
+            "checkInterval": 15,
+            "timeout": 5,
+            "maxConnections": 50,
+            "exponentialBackoffSeconds": 5
+        }
+    },
+    "servers": [
+        {
+            "name":"Apache Server",
+            "ipAddress":"8.8.8.8",
+            "port": 8080,
+            "protocol": "tcp",
+            "checkInterval": 5,
+            "timeout": 5
+        },
+        {
+            "name":"LoadBalancer",
+            "ipAddress":"162.243.10.151",
+            "port": 80,
+            "protocol": "tcp",
+            "checkInterval": 5,
+            "timeout": 5
+        }
+    ]
+}

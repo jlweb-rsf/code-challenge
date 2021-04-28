@@ -1,3 +1,6 @@
+## This file is going to create our Ansible inventory file \
+## based on the IP address associated to our EC2 Instance.
+
 resource "local_file" "private_key" {
   sensitive_content = tls_private_key.key.private_key_pem
   filename          = format("%s/%s/%s", abspath(path.root), ".ssh", "apache-ssh-key.pem")

@@ -1,3 +1,5 @@
+## This file is going to crate our VPC, Private and public subnets.
+
 locals {
   public_cidr_block  = cidrsubnet(var.vpc_cidr, 1, 0)
   private_cidr_block = cidrsubnet(var.vpc_cidr, 1, 1)

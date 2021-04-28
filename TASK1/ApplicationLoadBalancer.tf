@@ -1,4 +1,5 @@
 # Creating the application load balancer.
+
 resource "aws_alb" "assignment_alb" {
   name               = "apache-lb"
   internal           = false
@@ -67,8 +68,8 @@ resource "aws_launch_template" "assignment" {
   name_prefix            = "assignment-"
   image_id               = var.aws_ec2_ami[var.aws_region]
   instance_type          = var.aws_ec2_instance_type
-  key_name               = var.ssh_private_key_name
-  vpc_security_group_ids = [aws_security_group.assignment_private_sg.id]
+  key_name               = aws_key_pair.aws_key.key_name
+  vpc_security_group_ids = [aws_security_group.assignment_public_sg.id]
 
 
 

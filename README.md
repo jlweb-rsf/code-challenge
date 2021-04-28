@@ -26,6 +26,6 @@
 
 ##### Checking The Apache Service periodically
 
- 1- There is a [workflow](./.github/workflows/check.yml) to check the Apache service is up and running, every 15 minutes. It uses a simple ansible ad-hoc command to SSH to the server and ensure httpd service is running as expected.
+ 1- There is a [workflow](./.github/workflows/check.yml) to check the Apache service is up and running. It uses a simple ansible ad-hoc command to SSH to the server and ensure httpd service is running as expected. The same command could be triggered from outside by providing the Inventory and Key file.
 
- 2- Direcotry [monitor](./TASK1/monitor/) contains a simple application written in Go to check the server availability and notify based on its [configurations](./TASK1/monitor/configs/default.json). You Just need to update the IP address and Slack tokens in config file and simply build the Dockerfile by running `docker-compose build` and `docker-compose up`
+ 2- Direcotry [monitor](./TASK1/monitor/) contains a simple application written in Go to check the server availability and notify based on its [configurations](./TASK1/monitor/configs/default.json). You Just need to update the IP address and Slack tokens in config file and simply build the Dockerfile by running `docker-compose build` and `docker-compose up`.

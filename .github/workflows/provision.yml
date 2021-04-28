@@ -88,8 +88,8 @@ jobs:
 
       - name: Show me the inventory
         run: |
-          cat inventory.yaml
+          cat ${{ github.workspace }}/TASK1/inventory.yaml
 
       - name: run ansible playbook
         run: |
-          ansible-playbook -i inventory.yaml --tags=apache ./ansible/playbook.yml
+          ansible-playbook -i ${{ github.workspace }}/TASK1/inventory.yaml --tags=apache ./ansible/playbook.yml

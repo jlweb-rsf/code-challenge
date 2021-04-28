@@ -7,14 +7,14 @@ on:
   pull_request:
 
 jobs:
-  Plan:
+  terraform:
     name: "Terraform init, plan and Apply"
     runs-on: ubuntu-latest
 
     defaults:
       run:
         shell: bash
-        working-directory: './TASK1'
+        working-directory: "./TASK1"
 
     steps:
       - name: Checkout
@@ -58,10 +58,9 @@ jobs:
           name: inventory.yaml
           path: ${{ github.workspace }}
 
-
   Delay:
     name: "Waiting for EC2 instances initialization"
-    needs: Apply
+    needs: terraform
     runs-on: ubuntu-latest
     steps:
       - name: Sleep for 3 minutes
@@ -76,13 +75,13 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: './TASK1'
+        working-directory: "./TASK1"
     steps:
       - uses: actions/checkout@v1
       - name: Set up Python 3.
         uses: actions/setup-python@v2
         with:
-          python-version: '3.x'
+          python-version: "3.x"
 
       - name: Install test dependencies.
         run: pip3 install ansible

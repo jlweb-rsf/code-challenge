@@ -8,7 +8,7 @@ on:
 
 jobs:
   Plan:
-    name: "Terraform init and plan"
+    name: "Terraform init, plan and Apply"
     runs-on: ubuntu-latest
 
     defaults:
@@ -38,20 +38,6 @@ jobs:
           name: tfplan
           path: ${{ github.workspace }}
 
-  Apply:
-    name: "Terraform Apply"
-    needs: Plan
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
-        working-directory: './TASK1'
-    steps:
-      - name: Downloading the plan output file.
-        uses: actions/download-artifact@v2
-        with:
-          name: tfplan
-
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         env:
@@ -71,6 +57,7 @@ jobs:
         with:
           name: inventory.yaml
           path: ${{ github.workspace }}
+
 
   Delay:
     name: "Waiting for EC2 instances initialization"

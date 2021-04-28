@@ -85,6 +85,10 @@ jobs:
           name: inventory.yaml
           path: ${{ github.workspace }}/TASK1
 
+      - name: Update The SSH key permissions
+        run: chmod 400 ${{ github.workspace }}/TASK1/.ssh/apache-ssh-key.pem
+
+
       - name: run ansible playbook
         run: |
           ansible-playbook -i ${{ github.workspace }}/TASK1/inventory.yaml --tags=apache ./ansible/playbook.yml

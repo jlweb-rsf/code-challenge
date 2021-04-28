@@ -2,6 +2,11 @@
 
  - The files in the [TASK](./TASK1) directory are all playbooks, codes and scripts to bootstrap an Apache server and load balancer on AWS. 🚀
  - I wrote a short description on each terraform file to declare what is the purpose of each of them.
+ - Technologies used in this practice:
+    * Terraform (To provision AWS infrastructure).
+    * Ansible (To deploy apache web server).
+    * Github Action as CICD tool.
+    * Docker and Docker-compose to run a simple Golang monitoring application.
 
 
 ##### CI/CD clarifications:
@@ -13,7 +18,7 @@
 - The deployment [workflow](./.github/workflows/provision.yml) run by pushing the code into or merging with branch `main` and perform the following actions:
     * provision infrastructures described on terraform configuration files.
     * a delayed job is triggered to wait for few minutes till EC2 instances being ready.
-    * Finally, the ansible-playbook will be run to deploy a simple Apache web server on the target instance.
+    * Finally, the ansible-playbook will be run to deploy a simple Apache web server on the target instance. The content will be the default Apache web server and it shows a simple HTML page (aka APACHE TEST PAGE) by pointing ALB_DNS_RECORD:8080 in your browser.
 
 - The CI [workflow](./.github/workflows/check.yml) (which is run on branch `dev`) contains a linting process to check the typo and code style on Ansible roles and also testing the whole playbook on different Linux distributions with molecule.
 
